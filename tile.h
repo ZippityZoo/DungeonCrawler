@@ -16,7 +16,7 @@ A tile should have :
 
 class Tile{
     private:
-        std::vector<Tile*> adjacent;
+        std::vector<std::shared_ptr<Tile>> adjacent;
         long id;
         long adjrooms;
     public:
@@ -58,7 +58,7 @@ class Tile{
         }
         */
         void printids(){
-            std::cout<<"my id is "<<id<<"and my adjacent ids are:"<<std::endl;
+            std::cout<<"my id is "<<id<<" and my adjacent ids are:"<<std::endl;
             for(auto &e: adjacent){
                 std::cout<<"->"<<e->id;
             }
@@ -68,14 +68,14 @@ class Tile{
         *if the key is found return true
         */
         bool searchadjs(Tile key){
-            for(Tile* e: adjacent){
+            for(auto& e: adjacent){
                 if(e->id == key.id){
                     return true;
                 }
             }
             return false;
         }
-        void append_room(Tile* adj){
+        void append_room(std::shared_ptr<Tile> adj){
             adjacent.push_back(adj);
             adjrooms -= 1;
         }
