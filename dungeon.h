@@ -17,7 +17,7 @@ class Dungeon{
         Dungeon(Size size){
             int s = (int)size;
             for(int i = 0; i < s; i++){
-                map.push_back(std::make_shared<Tile>(i));
+                map.push_back(std::make_shared<Tile>());
                 //std::cout<<i<<std::endl;
                 //pool.push_back(map.back().retadj());
             }
@@ -27,19 +27,19 @@ class Dungeon{
          * 
          * 
         */
-        void assignAvail(){
+        void assign_available_rooms(){
             auto& start = map.front();
             int random = 0;
             for(int i = 0;i < map.size();i++){
                 if(map.at(i) != start){
                     random = rand()%4+1;
-                    map.at(i)->assnadjs(random);
+                    map.at(i)->assign_availibility(random);
                 }else{
                     random = 1;
-                    map.at(i)->assnadjs(random);
+                    map.at(i)->assign_availibility(random);
                 }
                 pool.push_back(i);
-                std::cout<<map.at(i)->retid()<<"'s available rooms are "<<map.at(i)->retadj()<<std::endl;
+                //std::cout<<map.at(i)->retid()<<"'s available rooms are "<<map.at(i)->retadj()<<std::endl;
             }
         }
         /*
@@ -55,25 +55,25 @@ class Dungeon{
                 //e.retadj() > 0
                 while(e->retadj() > 0 && i < 30){
                     //connect the tile with map at e
-                    auto pick = map.at(avail());
+                    auto pick = map.at(rooms_available());
                     connect(e,pick);
-                    printp();
+                    print_pool();
                     i++;
                 }
             }
-            printp();
-            printa();
+            print_pool();
+            print_available_rooms();
 
         }
-        void connectionbypool(){
+        void connect_by_pool(){
             int i = 0;
             while(!pool.empty() && i < 45){
-                auto picka = map.at(avail());
+                auto picka = map.at(rooms_available());
                 if(pool.size() == 1){
                     pool.pop_back();
                     break;
                 }
-                auto pickb = map.at(avail());
+                auto pickb = map.at(rooms_available());
                 connect(picka,pickb);
                 i++;
             }
@@ -82,7 +82,7 @@ class Dungeon{
         *This funciton is just for testing but it will
         *Print the ids and their next rooms
         * */
-        void PD(){
+        void print_dungeon(){
             for(auto& e: map){
                 std::cout<<"\nRoom Id "<<e->retid()<<std::endl;
                 e->printids();
@@ -93,7 +93,7 @@ class Dungeon{
         *select from so if 1,4,6,7 are have rooms availible they will be numbers we can select from
         *this functon will return a random available room 
         *  */
-        long avail(){
+        long rooms_available(){
             unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
             //assuming pool has the ids we can pick from
             int key = -1;
@@ -108,7 +108,7 @@ class Dungeon{
             //return 0;//pool;
         }
         /*
-        *Used in the avail func this will find they tile with no adjacent rooms
+        *Used in the rooms_available func this will find they tile with no adjacent rooms
         */
         long find_key(){
             int key = -1;
@@ -119,14 +119,14 @@ class Dungeon{
                 if(map.at(i)->retadj() == 0){
                     key = i;
                     map.at(i)->destoryconnection();
-                    std::cout<<key<<std::endl;
+                    //std::cout<<key<<std::endl;
                     return key;
                 }
             } 
             return -1;
         }
         /**
-         * used in the avail func
+         * used in the rooms_available func
          * removes a tile that has no more room
         */
         void remove_full_tile(int key){
@@ -138,7 +138,7 @@ class Dungeon{
                         pool.at(i) = pool.back();
                         pool.back() = temp;
                         temp = pool.back();
-                        std::cout<<temp<<" was removed"<<std::endl;
+                        //std::cout<<temp<<" was removed"<<std::endl;
                         pool.pop_back();
                         break;
                         //pool.at();
@@ -150,12 +150,12 @@ class Dungeon{
          * the new avail func works
          * 
         */
-        void testdestroy(){
+        void test_destroy(){
             for(int i = 0;i < map.size();i++){
                 while(map.at(i)->retadj() > 0){
                     //printa();
                     //std::cout<<avail()<<","; 
-                    map.at(avail())->destoryconnection();
+                    map.at(rooms_available())->destoryconnection();
                     //e.connect(map.at(rand() % map.size()));
                 }
             }
@@ -164,14 +164,14 @@ class Dungeon{
         /*
         *func used to connect
         */
-        void printa(){
+        void print_available_rooms(){
             std::cout<<"_________________________"<<std::endl;
             for(auto& e: map){
                 std::cout<<e->retid()<<"'s available rooms are "<<e->retadj()<<std::endl;
             }
             
         }
-        void printp(){
+        void print_pool(){
             std::cout<<"___________Pool Numbers______________"<<std::endl;
             for(int i = 0;i<pool.size();i++){
                 std::cout<<pool.at(i)<<std::endl;
@@ -198,6 +198,7 @@ class Dungeon{
             }
             return sum;
         }
+        private:
         int connect(std::shared_ptr<Tile> A, std::shared_ptr<Tile>  B){
             if(A->retid() == B->retid()){
                 //perror("Error Self");

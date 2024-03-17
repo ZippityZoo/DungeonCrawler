@@ -16,17 +16,17 @@ A tile should have :
 
 class Tile{
     private:
-        std::vector<std::shared_ptr<Tile>> adjacent;
+        std::vector<std::shared_ptr<Tile>> adjacent_rooms;
         long id;
-        long adjrooms;
+        long availibility;
     public:
         Tile(){
             id = rand();
-            long adjrooms = 0;
+            long availibility = 0;
         }
         Tile(long id):id{id}{
             //this.id = id;
-            long adjrooms = 0;
+            long availibility = 0;
         }
         /*
         Create a two way connection so both tiles
@@ -45,11 +45,11 @@ class Tile{
             else if(searchadjs(adj)){
                 std::cout<<"Error Duplicate\n";
             }
-            else if((adjrooms > 0 && adj.retadj() > 0)){
-                adjacent.push_back(&adj);
-                adj.adjacent.push_back(this); 
-                adjrooms -= 1;
-                adj.adjrooms -= 1;
+            else if((availibility > 0 && adj.retadj() > 0)){
+                adjacent_rooms.push_back(&adj);
+                adj.adjacent_rooms.push_back(this); 
+                availibility -= 1;
+                adj.availibility -= 1;
             }else{
                 std::cout<<"Error Full\n";
             }
@@ -58,17 +58,17 @@ class Tile{
         }
         */
         void printids(){
-            std::cout<<"my id is "<<id<<" and my adjacent ids are:"<<std::endl;
-            for(auto &e: adjacent){
+            std::cout<<"my id is "<<id<<" and my adjacent_rooms ids are:"<<std::endl;
+            for(auto &e: adjacent_rooms){
                 std::cout<<"->"<<e->id;
             }
         }
         /* 
-        *searches our adjacent rooms for the key room
+        *searches our adjacent_rooms rooms for the key room
         *if the key is found return true
         */
         bool searchadjs(Tile key){
-            for(auto& e: adjacent){
+            for(auto& e: adjacent_rooms){
                 if(e->id == key.id){
                     return true;
                 }
@@ -76,8 +76,20 @@ class Tile{
             return false;
         }
         void append_room(std::shared_ptr<Tile> adj){
-            adjacent.push_back(adj);
-            adjrooms -= 1;
+            adjacent_rooms.push_back(adj);
+            availibility -= 1;
+        }
+        void assign_availibility(int adj){
+            availibility = adj;
+        }
+        long retid(){
+            return id;
+        }
+        long retadj(){
+            return availibility;
+        }
+        void destoryconnection(){
+            availibility--;
         }
         friend bool operator!=(const Tile& lhs,const Tile& rhs){
             return lhs.id != rhs.id;
@@ -85,19 +97,6 @@ class Tile{
         friend bool operator==(const Tile& lhs,const Tile& rhs){
             return lhs.id == rhs.id;
         }
-        void assnadjs(int adj){
-            adjrooms = adj;
-        }
-        long retid(){
-            return id;
-        }
-        long retadj(){
-            return adjrooms;
-        }
-        void destoryconnection(){
-            adjrooms--;
-        }
-
 };
 //question how should i initthe random pointers to the next room
 
