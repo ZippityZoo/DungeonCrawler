@@ -16,52 +16,28 @@ A tile should have :
 
 class Tile{
     private:
-        std::vector<std::shared_ptr<Tile>> adjacent_rooms;
+        std::vector<std::shared_ptr <Tile> > adjacent_rooms;
         long id;
         long availibility;
     public:
         Tile(){
             id = rand();
             long availibility = 0;
-        }
+        };
+        /*
         Tile(long id):id{id}{
             //this.id = id;
             long availibility = 0;
-        }
-        /*
-        Create a two way connection so both tiles
-        know they are connected
-        fix two problems
-        1.)check for both to see if they can connect if not 
-        find some wat to connect them some other way to connect them
-        2.)cant connect to self
-        3.)
-        */
-        /*void connect(Tile adj){
-            if(*this == adj){
-                std::cout<<"Error Self\n";
-                //perror("ERROR SELF");
-            }
-            else if(searchadjs(adj)){
-                std::cout<<"Error Duplicate\n";
-            }
-            else if((availibility > 0 && adj.retadj() > 0)){
-                adjacent_rooms.push_back(&adj);
-                adj.adjacent_rooms.push_back(this); 
-                availibility -= 1;
-                adj.availibility -= 1;
-            }else{
-                std::cout<<"Error Full\n";
-            }
-            
-            //std::cout<<"connected "<<id<<"and"<<adj.id<<std::endl;
-        }
+        };
         */
         void printids(){
             std::cout<<"my id is "<<id<<" and my adjacent_rooms ids are:"<<std::endl;
             for(auto &e: adjacent_rooms){
                 std::cout<<"->"<<e->id;
             }
+        }
+        std::vector<std::shared_ptr<Tile> >get_adjacent_rooms(){
+            return adjacent_rooms;
         }
         /* 
         *searches our adjacent_rooms rooms for the key room
@@ -74,6 +50,9 @@ class Tile{
                 }
             }
             return false;
+        }
+        std::shared_ptr<Tile> room_at(int i){
+            return adjacent_rooms.at(i);
         }
         void append_room(std::shared_ptr<Tile> adj){
             adjacent_rooms.push_back(adj);

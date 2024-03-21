@@ -8,11 +8,11 @@ enum class Size {Tiny = 5,Small=10,Medium=20,Large=30};
 
 class Dungeon{
     private:
-        std::vector<std::shared_ptr<Tile>> map;
+        std::vector<std::shared_ptr<Tile> > map;
         std::string dungeon_name;
         std::vector<long> pool;
         //std::default_random_engine& gen;
-        //std::unique_ptr<Tile> end;
+        std::shared_ptr<Tile> start;
     public:
         Dungeon(Size size){
             int s = (int)size;
@@ -21,6 +21,7 @@ class Dungeon{
                 //std::cout<<i<<std::endl;
                 //pool.push_back(map.back().retadj());
             }
+            start = map.at(1);
         }
         /**
          * Assigns each tile a random number of rooms availible
@@ -197,6 +198,9 @@ class Dungeon{
                 sum += i->retadj();
             }
             return sum;
+        }
+        std::shared_ptr<Tile> get_start(){
+            return start;
         }
         private:
         int connect(std::shared_ptr<Tile> A, std::shared_ptr<Tile>  B){
